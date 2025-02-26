@@ -8,6 +8,7 @@ main(int argc, char* argv[]){
  assert(argv[argc] == NULL);
  assert(argc > 0);
  assert(argv[0] != NULL);
+ // ERROR CHECK no args
  if(argc == 1){
   fprintf(\
     stderr,\
@@ -15,21 +16,22 @@ main(int argc, char* argv[]){
     "Usage: %s DIGITS...\n"\
     "e.g. %s 19 77\n",\
     argv[0], argv[0]
-  );
+    );
   return -1;
  }
+ // ERROR CHECK not enough args
  assert(argv[1] != NULL);
  if(argc == 2){
   int counter = 0;
   while(argv[1][counter] != '\0'){
-    if(isdigit( (int) argv[1][counter] )){
-     counter++;
-     continue;
-    }else{
-     argv[1] = "19";
-     break;
-    }
-    assert(0);
+   if(isdigit( (int) argv[1][counter] )){
+    counter++;
+    continue;
+   }else{
+    argv[1] = "19";
+    break;
+   }
+   assert(0);
   }
   fprintf(\
     stderr,\
@@ -37,15 +39,21 @@ main(int argc, char* argv[]){
     "Usage: %s DIGITS...\n"\
     "e.g. %s %s 77\n",\
     argv[0], argv[0], argv[1]\
-  );
+    );
   return -1;
  }
- for(int x = argc-1; x > 0; --x){
+ // ASCII TO DIGIT
+ assert(argc >= 3);
+ int digits[argc];
+ digits[0] = 0;
+ for(int x = 1, t = argc; x < t; ++x){
   int y = 0;
   assert(argv[x][y] != 0);
   do{
-   if(isdigit((int)argv[x][y])) continue;
-   else{
+   if(isdigit((int)argv[x][y])){
+    digits[x] = atoi(argv[x]);
+    continue;
+   }else{
     fprintf(stderr, "Argument \'%s\' number %d is not digit.\n", argv[x], x);
     argc = -1;
     continue;
@@ -55,16 +63,8 @@ main(int argc, char* argv[]){
   continue;
  }
  if(argc == -1) return -1;
-
- assert(argc >= 3);
  int index = argc;
- int digits[index];
- digits[0] = 0;
- for(int n = 1; n < index; ++n){
-  assert(isdigit(*argv[n]));
-  digits[n] = atoi(argv[n]);
-  continue;
- }
+ // SORT DIGITS
  while(--index > 1){
   assert(index != argc);
   assert(digits[index] != digits[index-1]);
@@ -78,6 +78,7 @@ main(int argc, char* argv[]){
   assert(0);
  }
  assert(digits[0] == 0);
+ // CALCULATE GCD
  int pointer = 0;
  int n = 0;
  int m = 0;
